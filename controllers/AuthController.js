@@ -45,14 +45,14 @@ const userLogin = async(request = Request, response = Response) => {
     }
 }
 
-/* const revalidarToken = (req, resp = response) => {
+const revalidarToken = (req, resp = response) => {
     resp.json({
         ok: true,
         msg: 'renew'
     });
-} */
+} 
 
 module.exports = {
     userLogin,
-    /* revalidarToken */
+    revalidarToken 
 };
