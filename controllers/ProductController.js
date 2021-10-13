@@ -73,7 +73,7 @@ const eliminarProducto = async (req, resp = response) => {
 const buscarProducto = async (req, res = response) => {
 
     const searchID = async (id) => {
-        const product = await producto.findById(id);
+        const product = await Producto.findById(id);
         console.log(product);
         if (product) {
             res.status(200).json({
@@ -88,7 +88,7 @@ const buscarProducto = async (req, res = response) => {
     }
 
     const searchName = async (nombre) => {
-        const product = await producto.find({ 'nombre': { '$regex': `${nombre}`, '$options': 'i' } });
+        const product = await Producto.find({ 'nombre': { '$regex': `${nombre}`, '$options': 'i' } });
         if (!product.length == 0) {
             res.status(200).json({
                 msg: "Lista de productos",
@@ -104,7 +104,7 @@ const buscarProducto = async (req, res = response) => {
 
     if (Object.entries(req.query).length === 0) {
         try {
-            const product = await producto.find();
+            const product = await Producto.find();
             res.status(200).json({
                 msg: 'Lista de Productos',
                 product
