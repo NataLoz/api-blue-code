@@ -22,6 +22,8 @@ app.use(express.json());
 app.use('/api/ciclo3/auth', require('./routes/authRoutes'));
 app.use('/api/ciclo3/user', require('./routes/userRoutes'));
 
+/**Rutas gestion productos */
+app.use('/api/ciclo3/product', require('./routes/productRoutes'));
 
 
 /** Escuchar las peticiones */
