@@ -72,29 +72,55 @@ const eliminarProducto = async (req, resp = response) => {
 
 const buscarProducto = async (req, res = response) => {
 
-    const { id, nombre } = req.query;
-    try {
-        if (nombre) {
-            const product = await Producto.find({ 'nombre': { '$regex': `${nombre}`, '$options': 'i' } });
-            res.status(200).json({
-                msg: "Lista de productos",
-                productos: product,
-            });
-        } else if (id) {
-            const product = await Producto.findById(id);
+    const searchID = async (id) => {
+        const product = await Producto.findById(id);
+        console.log(product);
+        if (product) {
             res.status(200).json({
                 msg: "Lista de productos",
                 productos: product,
             });
         } else {
-            res.status(200).json({
-                msg: "Producto no existente"
+            res.status(404).json({
+                msg: "Este producto no existe"
             });
         }
-    } catch (e) {
-        res.status(404).json({
-            msg: "Producto no encontrado"
-        });
+    }
+
+    const searchName = async (nombre) => {
+        const product = await Producto.find({ 'nombre': { '$regex': `${nombre}`, '$options': 'i' } });
+        if (!product.length == 0) {
+            res.status(200).json({
+                msg: "Lista de productos",
+                productos: product,
+            });
+        }else{
+            res.status(404).json({
+                msg: "Este producto no existe"
+            });
+        }
+
+    }
+
+    if (Object.entries(req.query).length === 0) {
+        try {
+            const product = await Producto.find();
+            res.status(200).json({
+                msg: 'Lista de Productos',
+                product
+            });
+        } catch (error) {
+            res.status(500).json({
+                msg: `${error}`
+            });
+        }
+    } else {
+        const { id, nombre } = req.query;
+        if (id) {
+            searchID(id);
+        } else {
+            searchName(nombre);
+        }
     }
 }
 
