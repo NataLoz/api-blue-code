@@ -1,6 +1,7 @@
 const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const { generateJWT } = require('../helpers/jwt');
 
 /**
  * Metodo para verificar la autenticacion del usuario
@@ -45,14 +46,26 @@ const userLogin = async(request = Request, response = Response) => {
     }
 }
 
-/* const revalidarToken = (req, resp = response) => {
+const authGoogle = async(request = Request, response = Response) => {
+    console.log('Falta logica para insertar');
+}
+
+const revalidateToken = async(req, resp = response) => {
+
+    const { uid, name } = req;
+
+    /**Generar Nuevo Token */
+    const token = await generateJWT(uid, name);
+
     resp.json({
         ok: true,
-        msg: 'renew'
+        token: token
     });
-} */
+}
+
 
 module.exports = {
     userLogin,
-    /* revalidarToken */
+    authGoogle,
+    revalidateToken
 };

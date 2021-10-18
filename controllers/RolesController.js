@@ -1,19 +1,18 @@
 const { response } = require('express');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User')
+const Rol = require('../models/Rol')
 
 /**
- * Metodo para listar los usuarios
+ * Metodo para listar los roles
  * @param {*Request} request 
- * @param {*Response} response 
+ * @param {*Response} response
  * @returns 
  */
-const getUser = async(request = Request, response = Response) => {
+const getRol = async(request = Request, response = Response) => {
 
     try {
-        let getUser = await User.find().populate('rol', 'name typeRol status -_id');
+        let getRol = await Rol.find();
 
-        if (getUser == false) {
+        if (getRol == false) {
             return response.status(400).json({
                 ok: false,
                 msg: 'No hay Registros actualmente'
@@ -23,11 +22,11 @@ const getUser = async(request = Request, response = Response) => {
         response.status(200).json({
             ok: true,
             msg: 'Registros encontrados exitosamente',
-            data: getUser
+            data: getRol
         });
 
     } catch (error) {
-        console.log('Error en listar usuarios' + error);
+        console.log('Error en listar roles' + error);
         response.status(500).json({
             ok: false,
             msg: 'error interno del servidor al buscar los registro',
@@ -41,37 +40,33 @@ const getUser = async(request = Request, response = Response) => {
  * @param {*Response} response 
  * @returns 
  */
-const createUser = async(request = Request, response = Response) => {
+const createRol = async(request = Request, response = Response) => {
 
-    const { email, password } = request.body;
+    const { typeRol } = request.body;
 
     try {
 
-        let user = await User.findOne({ email });
+        let rol = await Rol.findOne({ typeRol });
 
-        if (user) {
+        if (rol) {
             return response.status(400).json({
                 ok: false,
-                msg: 'ya existe un usuario registrado con este email'
+                msg: 'ya existe un rol registrado con este id'
             });
         }
 
-        user = new User(request.body);
+        rol = new Rol(request.body);
 
-        /**Encriptando contraseña */
-        const salt = bcrypt.genSaltSync();
-        user.password = bcrypt.hashSync(password, salt);
-
-        await user.save();
+        await rol.save();
 
         response.status(201).json({
             ok: true,
-            msg: 'Usuario creado de manera exitosa',
-            data: User
+            msg: 'Rol creado de manera exitosa',
+            data: Rol
         });
 
     } catch (error) {
-        console.log('Error al crear usuarios' + error);
+        console.log('Error al crear rol' + error);
         response.status(500).json({
             ok: false,
             msg: 'error interno del servidor al guardar el registro',
@@ -85,28 +80,28 @@ const createUser = async(request = Request, response = Response) => {
  * @param {*Response} response 
  * @returns 
  */
-const updateUser = async(request = Request, response = Response) => {
+const updateRol = async(request = Request, response = Response) => {
 
-    const { email } = request.body;
+    const { typeRol } = request.body;
 
     try {
-        const user = await User.findOneAndUpdate({ email }, request.body);
+        const rol = await Rol.findOneAndUpdate({ typeRol }, request.body);
 
-        if (user) {
+        if (rol) {
             response.status(201).json({
                 ok: true,
-                msg: 'Usuario actualizado de manera exitosa',
-                data: User
+                msg: 'Rol actualizado de manera exitosa',
+                data: Rol
             });
         }
 
         return response.status(400).json({
             ok: false,
-            msg: 'Ubo un problema al momento de actualizar el usuario'
+            msg: 'Ubo un problema al momento de actualizar el rol'
         });
 
     } catch (error) {
-        console.log('Error al actualizar usuarios' + error);
+        console.log('Error al actualizar roles' + error);
         response.status(500).json({
             ok: false,
             msg: 'error interno del servidor al actualizar el registro',
@@ -120,29 +115,29 @@ const updateUser = async(request = Request, response = Response) => {
  * @param {*Response} response 
  * @returns 
  */
-const deleteUser = async(request = Request, response = Response) => {
+const deleteRol = async(request = Request, response = Response) => {
 
-    const { email } = request.body;
+    const { typeRol } = request.body;
     const status = false;
 
     try {
-        const user = await User.findOneAndUpdate({ email }, status);
+        const rol = await User.findOneAndUpdate({ typeRol }, status);
 
-        if (user) {
+        if (rol) {
             response.status(201).json({
                 ok: true,
-                msg: 'Usuario inactivado de manera exitosa',
-                data: User
+                msg: 'Rol inactivado de manera exitosa',
+                data: Rol
             });
         }
 
         return response.status(400).json({
             ok: false,
-            msg: 'Ubo un problema al momento de inactivar el usuario'
+            msg: 'Ubo un problema al momento de inactivar el rol'
         });
 
     } catch (error) {
-        console.log('Error al eliminar usuarios' + error);
+        console.log('Error al eliminar roles' + error);
         response.status(500).json({
             ok: false,
             msg: 'error interno del servidor al inactivar el registro',
@@ -151,8 +146,8 @@ const deleteUser = async(request = Request, response = Response) => {
 }
 
 module.exports = {
-    getUser,
-    createUser,
-    updateUser,
-    deleteUser
+    getRol,
+    createRol,
+    updateRol,
+    deleteRol
 };
