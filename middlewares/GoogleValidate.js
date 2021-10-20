@@ -1,7 +1,7 @@
 const { response } = require('express');
 const { OAuth2Client } = require('google-auth-library');
 const { subscribe } = require('../routes/authRoutes');
-const client = new OAuth2Client('55000912305-alve6692sj0jjb6dia5hr7v5o1tqanl0.apps.googleusercontent.com');
+const client = new OAuth2Client(process.env.Google_Client_Id);
 
 
 /**
@@ -28,27 +28,28 @@ const googleValidate = (request = Request, response = Response, next) => {
     }
 
     try {
+
         client.verifyIdToken({
                 idToken: token,
-                audience: '55000912305-alve6692sj0jjb6dia5hr7v5o1tqanl0.apps.googleusercontent.com'
+                audience: process.env.Google_Client_Id
             })
-            .then((response) => {
-                const { sub, name, email } = response.payload;
-                console.log(sub, name, email);
+            .then((resp) => {
+                const { sub, name, email } = resp.payload;
+                request.uid = sub;
+                request.name = name;
+                request.email = email;
                 next();
             })
             .catch((error) => {
                 return response.status(401).json({
                     ok: false,
-                    msg: 'Token invalido',
-                    error: error
+                    msg: 'Token invalido'
                 });
             });
     } catch (error) {
         return response.status(500).json({
             ok: false,
-            msg: 'Error en el servidor al procesar la solicitud',
-            error: error
+            msg: 'Error interno de servidor'
         });
     }
 }

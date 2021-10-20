@@ -1,16 +1,16 @@
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
 
-const validateJWT = (request, response = response, next) => {
+const validateJWT = (request = Request, response = Response, next) => {
 
     /**x-token headers */
 
-    const token = request.header('x-token');
+    const token = request.header('authorization').split(' ')[1];
 
     if (!token) {
         return response.status(401).json({
             ok: false,
-            msg: 'No se ha proporcionado un toke valido'
+            msg: 'No se ha proporcionado un token valido'
         });
     }
 
@@ -25,13 +25,12 @@ const validateJWT = (request, response = response, next) => {
 
         request.uid = uid;
         request.name = name;
-
-
-
+        
     } catch (error) {
-        return res.status(401).json({
+        return response.status(401).json({
             ok: false,
-            msg: 'Token invalido'
+            msg: 'Token invalido',
+            data: error
         });
     }
 

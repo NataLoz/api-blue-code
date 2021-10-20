@@ -9,6 +9,7 @@ const UserSchema = Schema({
     rol: { type: Schema.Types.ObjectId, ref: "Rol", require: true },
     password: { type: String, require: true },
     status: { type: Boolean, default: true },
+    idGoogleSession: { type: String},
     createdAt: { type: Date, default: Date.now() }
 }, {
     collection: 'Usuarios',
