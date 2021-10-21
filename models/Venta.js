@@ -11,9 +11,13 @@ const ventaSchema = Schema({
         type: Number,
         require: true
     },
-    valorTotal : {
+    valorTotal: {
         type: Number,
         require: true
+    },
+    estado: {
+        type: String,
+        default: 'En proceso'
     },
     vendedor: {
         type: Schema.Types.ObjectId,
@@ -21,7 +25,7 @@ const ventaSchema = Schema({
         require: true
     },
     fechaVenta: {
-        type: Date, 
+        type: Date,
         default: Date.now()
     },
     idCliente: {
