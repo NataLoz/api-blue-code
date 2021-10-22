@@ -31,6 +31,9 @@ app.use('/api/ciclo3/rol', require('./routes/rolRoutes'));
 /**Rutas gestion productos */
 app.use('/api/ciclo3/product', require('./routes/productRoutes'));
 
+/**Rutas gestion ventas */
+app.use('/api/ciclo/ventas', require('./routes/ventasRoutes.js'));
+
 
 /** Escuchar las peticiones */
 
