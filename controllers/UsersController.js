@@ -8,10 +8,10 @@ const User = require('../models/User')
  * @param {*Response} response 
  * @returns 
  */
-const getUser = async(request = Request, response = Response) => {
+const getUser = async (request = Request, response = Response) => {
 
     try {
-        let getUser = await User.find().populate('rol', 'name typeRol status -_id');
+        let getUser = await User.find().populate('rol', 'name typeRol status _id');
 
         if (getUser == false) {
             return response.status(400).json({
@@ -36,12 +36,47 @@ const getUser = async(request = Request, response = Response) => {
 }
 
 /**
+ * Metodo para listar los usuarios por id
+ * @param {*Request} request 
+ * @param {*Response} response 
+ * @returns 
+ */
+const getUserForId = async (request = Request, response = Response) => {
+    const userId = request.params.id;
+
+    try {
+        const user = await User.findById(userId).populate('rol', 'name typeRol status _id');
+
+        if (!user) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del usuario no coincide con ningun elemento en la base de datos',
+            });
+        }
+
+        response.json({
+            ok: true,
+            msg: 'Usuario encontrado de manera exitosa',
+            data: user
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({
+            ok: false,
+            msg: 'error al actualizar el usuario',
+        });
+    }
+}
+
+/**
  * Metodo para la creacion de usuarios
  * @param {*Request} request 
  * @param {*Response} response 
  * @returns 
  */
-const createUser = async(request = Request, response = Response) => {
+const createUser = async (request = Request, response = Response) => {
 
     const { email, password } = request.body;
 
@@ -85,24 +120,27 @@ const createUser = async(request = Request, response = Response) => {
  * @param {*Response} response 
  * @returns 
  */
-const updateUser = async(request = Request, response = Response) => {
+const updateUser = async (request = Request, response = Response) => {
 
-    const { email } = request.body;
+    const userId = request.params.id;
 
     try {
-        const user = await User.findOneAndUpdate({ email }, request.body);
 
-        if (user) {
-            response.status(201).json({
-                ok: true,
-                msg: 'Usuario actualizado de manera exitosa',
-                data: User
-            });
+        const user = await User.findByIdAndUpdate({ _id: userId });
+
+        if (!user) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del usuario no coincide con ningun elemento en la base de datos',
+            }); 
         }
 
-        return response.status(400).json({
-            ok: false,
-            msg: 'Ubo un problema al momento de actualizar el usuario'
+        const updateUser = await User.findByIdAndUpdate({ _id: userId }, request.body, { new: true });
+        
+        response.status(201).json({
+            ok: true,
+            msg: 'Usuario actualizado de manera exitosa',
+            data: updateUser
         });
 
     } catch (error) {
@@ -120,25 +158,25 @@ const updateUser = async(request = Request, response = Response) => {
  * @param {*Response} response 
  * @returns 
  */
-const deleteUser = async(request = Request, response = Response) => {
+const deleteUser = async (request = Request, response = Response) => {
 
-    const { email } = request.body;
+    const userId = request.params.id;
     const status = false;
 
     try {
-        const user = await User.findOneAndUpdate({ email }, status);
+        const user = await User.findByIdAndUpdate({ userId }, status, { new: true });
 
-        if (user) {
-            response.status(201).json({
-                ok: true,
-                msg: 'Usuario inactivado de manera exitosa',
-                data: User
+        if (!user) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del usuario no coincide con ningun elemento en la base de datos',
             });
         }
 
-        return response.status(400).json({
-            ok: false,
-            msg: 'Ubo un problema al momento de inactivar el usuario'
+        response.json({
+            ok: true,
+            msg: 'Usuario actualizado de manera exitosa',
+            data: user
         });
 
     } catch (error) {
@@ -154,5 +192,6 @@ module.exports = {
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserForId
 };
