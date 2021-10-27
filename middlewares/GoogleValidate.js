@@ -1,6 +1,5 @@
 const { response } = require('express');
 const { OAuth2Client } = require('google-auth-library');
-const { subscribe } = require('../routes/authRoutes');
 const client = new OAuth2Client(process.env.Google_Client_Id);
 
 
