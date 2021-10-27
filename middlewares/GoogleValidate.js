@@ -31,7 +31,7 @@ const googleValidate = (request = Request, response = Response, next) => {
 
         client.verifyIdToken({
                 idToken: token,
-                audience: process.env.Google_Client_Id
+                audience: `${process.env.Google_Client_Id}`
             })
             .then((resp) => {
                 const { sub, name, email } = resp.payload;

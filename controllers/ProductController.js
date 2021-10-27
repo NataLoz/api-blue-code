@@ -124,9 +124,38 @@ const buscarProducto = async (req, res = response) => {
     }
 }
 
+const buscarProductoId = async (req, res = response) => {
+    const productID = req.params.id;
+
+    try {
+        const producto = await Producto.findById(productID);
+
+        if (!producto) {
+            res.status(404).json({
+                ok: false,
+                msg: 'El id del producto no coincide con ningun elemento en la base de datos',
+            });
+        }
+
+        res.json({
+            ok: true,
+            msg: 'Producto encontrado de manera exitosa',
+            data: producto
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error al actualizar el producto',
+        });
+    }
+}
+
 module.exports = {
     crearProducto,
     actualizarProducto,
     buscarProducto,
-    eliminarProducto
+    eliminarProducto,
+    buscarProductoId
 }
