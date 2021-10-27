@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { check } = require('express-validator');
 const { Validate } = require('../middlewares/Validate');
-const { crearVenta, editarVenta, buscarVenta } = require("../controllers/ventaController");
+const { crearVenta, editarVenta, buscarVenta } = require("../controllers/VentaController");
 const router = Router();
 
 router.post('/new', [
