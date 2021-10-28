@@ -43,7 +43,7 @@ router.put(
     updateUser);
 
 router.delete(
-    '/delete:id',
+    '/delete/:id',
     deleteUser);
 
 // exportar las rutas configuradas
