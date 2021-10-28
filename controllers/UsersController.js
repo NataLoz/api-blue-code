@@ -161,10 +161,9 @@ const updateUser = async (request = Request, response = Response) => {
 const deleteUser = async (request = Request, response = Response) => {
 
     const userId = request.params.id;
-    const status = false;
 
     try {
-        const user = await User.findByIdAndUpdate({ userId }, status, { new: true });
+        const user = await User.findByIdAndDelete({ _id: userId });
 
         if (!user) {
             response.status(404).json({
@@ -173,9 +172,9 @@ const deleteUser = async (request = Request, response = Response) => {
             });
         }
 
-        response.json({
+        response.status(201).json({
             ok: true,
-            msg: 'Usuario actualizado de manera exitosa',
+            msg: 'Usuario eliminado de manera exitosa',
             data: user
         });
 

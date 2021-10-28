@@ -11,6 +11,7 @@ const Rol = require('../models/Rol');
  * @returns 
  */
 const userLogin = async (request = Request, response = Response) => {
+    console.log(request.body);
     const { email, password } = request.body;
 
     try {
@@ -26,6 +27,7 @@ const userLogin = async (request = Request, response = Response) => {
         const validPassword = bcrypt.compareSync(password, user.password);
 
         if (!validPassword) {
+            console.log(123);
             response.status(400).json({
                 ok: true,
                 msg: 'Usuario o contraseña errada'
@@ -34,7 +36,7 @@ const userLogin = async (request = Request, response = Response) => {
 
         const token = await generateJWT(user.id, user.name);
 
-        response.json({
+        response.status(200).json({
             ok: true,
             msg: 'Ok',
             token: token,
@@ -51,7 +53,7 @@ const userLogin = async (request = Request, response = Response) => {
 }
 
 /**
- * Metodo para la cerificacion del usuario con google OAuth2
+ * Metodo para la verificacion del usuario con google OAuth2
  * @param {*Request} request 
  * @param {*Response} response 
  * @returns 
