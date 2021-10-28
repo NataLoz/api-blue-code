@@ -1,6 +1,5 @@
 const { response } = require('express');
 const { OAuth2Client } = require('google-auth-library');
-const { subscribe } = require('../routes/authRoutes');
 const client = new OAuth2Client(process.env.Google_Client_Id);
 
 
@@ -31,7 +30,7 @@ const googleValidate = (request = Request, response = Response, next) => {
 
         client.verifyIdToken({
                 idToken: token,
-                audience: process.env.Google_Client_Id
+                audience: `${process.env.Google_Client_Id}`
             })
             .then((resp) => {
                 const { sub, name, email } = resp.payload;

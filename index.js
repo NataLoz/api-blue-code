@@ -28,10 +28,15 @@ app.use('/api/ciclo3/auth', require('./routes/authRoutes'));
 app.use('/api/ciclo3/user', require('./routes/userRoutes'));
 app.use('/api/ciclo3/rol', require('./routes/rolRoutes'));
 
+/**Rutas gestion productos */
+app.use('/api/ciclo3/product', require('./routes/productRoutes'));
+
+/**Rutas gestion ventas */
+app.use('/api/ciclo3/ventas', require('./routes/ventasRoutes.js'));
 
 
 /** Escuchar las peticiones */
 
-app.listen(process.env.Port, () => {
-    console.log(`Servidor corriendo en el puerto ${ process.env.Port }`)
+app.listen(process.env.PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${ process.env.PORT }`)
 })
