@@ -35,23 +35,58 @@ const getRol = async(request = Request, response = Response) => {
 }
 
 /**
- * Metodo para la creacion de usuarios
+ * Metodo para listar los roles por id
+ * @param {*Request} request 
+ * @param {*Response} response 
+ * @returns 
+ */
+ const getRolForId = async (request = Request, response = Response) => {
+    const rolId = request.params.id;
+
+    try {
+        const rol = await Rol.findById(rolId);
+
+        if (!rol) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del rol no coincide con ningun elemento en la base de datos',
+            });
+        }
+
+        response.json({
+            ok: true,
+            msg: 'Rol encontrado de manera exitosa',
+            data: rol
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        response.status(500).json({
+            ok: false,
+            msg: 'error al listar el rol',
+        });
+    }
+}
+
+/**
+ * Metodo para la creacion de roles
  * @param {*Request} request 
  * @param {*Response} response 
  * @returns 
  */
 const createRol = async(request = Request, response = Response) => {
 
-    const { typeRol } = request.body;
+    const { name } = request.body;
 
     try {
 
-        let rol = await Rol.findOne({ typeRol });
+        let rol = await Rol.findOne({ name });
 
         if (rol) {
             return response.status(400).json({
                 ok: false,
-                msg: 'ya existe un rol registrado con este id'
+                msg: 'ya existe un rol registrado con este nombre'
             });
         }
 
@@ -66,7 +101,7 @@ const createRol = async(request = Request, response = Response) => {
         });
 
     } catch (error) {
-        console.log('Error al crear rol' + error);
+        console.log('Error al crear rol ' + error);
         response.status(500).json({
             ok: false,
             msg: 'error interno del servidor al guardar el registro',
@@ -75,29 +110,32 @@ const createRol = async(request = Request, response = Response) => {
 }
 
 /**
- * Metodo para la actualizacion de usuarios
+ * Metodo para la actualizacion de roles
  * @param {*Request} request 
  * @param {*Response} response 
  * @returns 
  */
 const updateRol = async(request = Request, response = Response) => {
 
-    const { typeRol } = request.body;
+    const rolId = request.params.id;
 
     try {
-        const rol = await Rol.findOneAndUpdate({ typeRol }, request.body);
 
-        if (rol) {
-            response.status(201).json({
-                ok: true,
-                msg: 'Rol actualizado de manera exitosa',
-                data: Rol
-            });
+        const rol = await Rol.findByIdAndUpdate({ _id: rolId });
+
+        if (!rol) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del rol no coincide con ningun elemento en la base de datos',
+            }); 
         }
 
-        return response.status(400).json({
-            ok: false,
-            msg: 'Ubo un problema al momento de actualizar el rol'
+        const updateRol = await Rol.findByIdAndUpdate({ _id: rolId }, request.body, { new: true });
+        
+        response.status(201).json({
+            ok: true,
+            msg: 'Rol actualizado de manera exitosa',
+            data: updateRol
         });
 
     } catch (error) {
@@ -110,43 +148,44 @@ const updateRol = async(request = Request, response = Response) => {
 }
 
 /**
- * Metodo para la eliminacion de usuarios
+ * Metodo para la eliminacion de roles
  * @param {*Request} request 
  * @param {*Response} response 
  * @returns 
  */
 const deleteRol = async(request = Request, response = Response) => {
 
-    const { typeRol } = request.body;
-    const status = false;
+    const rolId = request.params.id;
 
     try {
-        const rol = await User.findOneAndUpdate({ typeRol }, status);
 
-        if (rol) {
-            response.status(201).json({
-                ok: true,
-                msg: 'Rol inactivado de manera exitosa',
-                data: Rol
-            });
+        const rol = await Rol.findByIdAndDelete({ _id: rolId });
+
+        if (!rol) {
+            response.status(404).json({
+                ok: false,
+                msg: 'El id del rol no coincide con ningun elemento en la base de datos',
+            }); 
         }
-
-        return response.status(400).json({
-            ok: false,
-            msg: 'Ubo un problema al momento de inactivar el rol'
+        
+        response.status(201).json({
+            ok: true,
+            msg: 'Rol eliminado de manera exitosa',
+            data: rol
         });
 
     } catch (error) {
-        console.log('Error al eliminar roles' + error);
+        console.log('Error al eliminar rol ' + error);
         response.status(500).json({
             ok: false,
-            msg: 'error interno del servidor al inactivar el registro',
+            msg: 'error interno del servidor al actualizar el registro',
         });
     }
 }
 
 module.exports = {
     getRol,
+    getRolForId,
     createRol,
     updateRol,
     deleteRol

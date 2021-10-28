@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { Validate } = require('../middlewares/Validate');
-const { getRol, createRol, updateRol, deleteRol } = require('../controllers/RolesController');
+const { getRol, getRolForId, createRol, updateRol, deleteRol } = require('../controllers/RolesController');
 const { validateJWT } = require('../middlewares/ValidateJwt');
 const router = Router();
 
@@ -15,6 +15,10 @@ router.get(
     '/list',
     getRol);
 
+router.get(
+    '/list/:id',
+    getRolForId);
+
 router.post(
     '/create', [
         check('name', 'El nombre del rol es obligatorio').not().isEmpty(),
@@ -24,15 +28,15 @@ router.post(
     createRol);
 
 router.put(
-    '/edit', [
+    '/edit/:id', [
         check('name', 'El nombre del rol es obligatorio').not().isEmpty(),
-        check('typeRol', 'El tipo de rol es obligatorio').not().isEmpty().isNumeric(),
+        //check('typeRol', 'El tipo de rol es obligatorio').not().isEmpty().isNumeric(),
         Validate
     ],
     updateRol);
 
 router.delete(
-    '/delete',
+    '/delete/:id',
     deleteRol);
 
 // exportar las rutas configuradas
